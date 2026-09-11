@@ -1,0 +1,24 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#090a0d">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="style.css">
+<!-- iOS: makes "Add to Home Screen" launch as a standalone app instead of opening Safari -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="HomeControl">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png">
+<title>HomeControl</title></head><body><div id="toast" class="toast"></div><main class="app">
+<div class="status"><span id="clock">--:--</span><span>Local Network</span></div>
+<header><div><h1>HomeControl</h1><div class="subtitle">Your network, without the tiny router screens from 2009.</div></div><button class="iconbtn" onclick="openSettings()">⚙︎</button></header>
+<section class="card hero"><div class="row"><div><div class="label">Internet</div><div class="value" id="internet">Online</div></div><span class="pill">● Connected</span></div><div class="row"><div class="small">WAN <b id="wan">192.168.1.1</b><br>Uptime <b id="uptime">12d 04h</b></div><button class="action" onclick="toast('Connection test started')">Test</button></div></section>
+<div class="grid" style="margin-top:12px"><div class="card"><div class="label">Download</div><div class="value">87.4</div><div class="small">Mbps</div></div><div class="card"><div class="label">Upload</div><div class="value">21.8</div><div class="small">Mbps</div></div><div class="card"><div class="label">Latency</div><div class="value">9</div><div class="small">ms</div></div><div class="card"><div class="label">Devices</div><div class="value" id="count">8</div><div class="small">connected</div></div></div>
+<div class="section">Network</div><div class="card"><div class="device"><span class="dot"></span><div><div class="name">Main Router</div><div class="ip">192.168.1.1 · Gateway</div></div><button class="secondary" onclick="toast('Router page opened')">Open</button></div>
+<div class="device"><span class="dot"></span><div><div class="name">AP Router</div><div class="ip">DHCP · Separate subnet</div></div><button class="secondary" onclick="toast('Device controls opened')">Manage</button></div>
+<div class="device"><span class="dot"></span><div><div class="name">TP-Link Switch</div><div class="ip">Gigabit · 7 ports active</div></div><button class="secondary" onclick="toast('Switch details opened')">View</button></div></div>
+<div class="section">Quick Actions</div><div class="grid"><button class="card" onclick="toast('Wake-on-LAN queued')">⚡<br><b>Wake device</b><br><span class="small">Wake-on-LAN</span></button><button class="card" onclick="toast('Ping test running')">⌁<br><b>Ping test</b><br><span class="small">Latency check</span></button><button class="card" onclick="toast('VPN status: configured')">🔒<br><b>VPN</b><br><span class="small">IPSec status</span></button><button class="card" onclick="toast('Router reboot requested')">↻<br><b>Reboot</b><br><span class="small">Requires agent</span></button></div>
+</main><nav><button class="active">⌂<br>Home</button><button onclick="toast('Device list opened')">▦<br>Devices</button><button onclick="toast('Network map opened')">⌁<br>Network</button><button onclick="openSettings()">⚙︎<br>Settings</button></nav>
+<div id="modal" class="modal"><div class="sheet"><div class="row"><h2>HomeControl</h2><button class="iconbtn" onclick="closeSettings()">×</button></div><p class="small">This starter UI is ready for a local control agent. A browser alone cannot safely reboot routers, scan the LAN, or configure VPNs.</p><div class="stack"><input id="gateway" value="192.168.1.1" placeholder="Router IP"><button class="action" onclick="saveGateway()">Save gateway</button></div></div></div>
+<script src="app.js"></script></body></html>

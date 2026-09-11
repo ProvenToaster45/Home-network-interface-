@@ -1,0 +1,33 @@
+
+:root{
+  color-scheme:dark;
+  --bg:#090a0d;--card:#15171c;--card2:#1d2027;--text:#f5f5f7;--muted:#989ba5;
+  --line:rgba(255,255,255,.08);--accent:#0A84FF;--green:#30d158;--red:#ff453a;
+  --radius:22px;
+}
+*{box-sizing:border-box} html,body{margin:0;min-height:100%;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text",Inter,Arial,sans-serif;background:var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent}
+body{padding-bottom:calc(92px + env(safe-area-inset-bottom))} button,input,select{font:inherit} button{border:0;color:inherit;cursor:pointer}
+.app{max-width:980px;margin:auto;padding:calc(18px + env(safe-area-inset-top)) 16px 18px}
+.status{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;margin:0 4px 10px}
+header{display:flex;align-items:center;justify-content:space-between;padding:8px 2px 18px}
+h1{font-size:30px;letter-spacing:-1px;margin:0}.subtitle{color:var(--muted);font-size:14px;margin-top:4px}
+.iconbtn{width:42px;height:42px;border-radius:50%;background:var(--card);font-size:20px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:linear-gradient(180deg,var(--card2),var(--card));border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:0 10px 35px rgba(0,0,0,.18)}
+.hero{padding:20px;min-height:160px;display:flex;flex-direction:column;justify-content:space-between}
+.label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.value{font-size:30px;font-weight:700;margin-top:7px}.small{font-size:13px;color:var(--muted)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px}.stack{display:flex;flex-direction:column;gap:10px}
+.pill{padding:7px 10px;border-radius:999px;background:rgba(48,209,88,.12);color:var(--green);font-size:12px;font-weight:600}
+.action{background:var(--accent);padding:11px 14px;border-radius:14px;font-weight:650}.secondary{background:var(--card2);padding:11px 14px;border-radius:14px}
+.device{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}.device:last-child{border:0}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 12px rgba(48,209,88,.55)}
+.device .name{font-weight:600}.device .ip{font-size:12px;color:var(--muted)}
+nav{position:fixed;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(94%,620px);background:rgba(27,29,34,.88);backdrop-filter:blur(24px);border:1px solid var(--line);border-radius:24px;padding:8px;display:flex;z-index:10;box-shadow:0 12px 40px rgba(0,0,0,.45)}
+nav button{flex:1;background:transparent;color:var(--muted);padding:9px 4px;border-radius:16px;font-size:12px}nav button.active{background:rgba(255,255,255,.08);color:var(--text)}
+.section{margin:22px 0 10px;font-size:19px;font-weight:700}
+input{width:100%;background:var(--card);border:1px solid var(--line);color:var(--text);padding:13px 14px;border-radius:15px;outline:none}
+.toast{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-80px);background:#f5f5f7;color:#111;padding:11px 16px;border-radius:999px;font-weight:650;transition:.25s;z-index:20}.toast.show{transform:translateX(-50%) translateY(0)}
+.movie-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.poster{aspect-ratio:2/3;border-radius:16px;background:linear-gradient(145deg,#2b2d35,#111318);display:flex;align-items:end;padding:10px;overflow:hidden;position:relative}.poster b{font-size:14px;text-shadow:0 2px 10px #000}.poster span{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.55);padding:4px 7px;border-radius:10px;font-size:10px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(14px);display:none;align-items:flex-end;z-index:15}.modal.open{display:flex}.sheet{width:100%;max-width:700px;margin:auto;background:#17191e;border:1px solid var(--line);border-radius:28px 28px 0 0;padding:22px;max-height:88vh;overflow:auto}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}.movie-grid{grid-template-columns:repeat(6,1fr)}.hero{grid-column:span 2}.sheet{border-radius:28px;margin-bottom:20px}.app{padding-top:30px}}
