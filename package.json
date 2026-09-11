@@ -1,0 +1,16 @@
+{
+  "name": "homecontrol-agent",
+  "version": "1.0.0",
+  "description": "Local network agent for the HomeControl PWA — runs on a Pi or always-on machine on your LAN and does the things a browser can't.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "ping": "^0.4.4",
+    "wol": "^1.0.7",
+    "ssh2": "^1.15.0"
+  }
+}

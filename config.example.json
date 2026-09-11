@@ -1,0 +1,39 @@
+{
+  "_comment": "Copy this file to config.json and fill in your own values. Never commit config.json — it holds credentials.",
+  "apiKey": "REPLACE_WITH_A_LONG_RANDOM_STRING",
+  "port": 5100,
+
+  "gateway": {
+    "ip": "192.168.1.1"
+  },
+
+  "router": {
+    "_comment": "Reboot support. method: 'none' | 'ssh' | 'http'. Leave as 'none' if you don't want remote reboot wired up.",
+    "method": "none",
+
+    "_ssh_comment": "Used when method is 'ssh'. Runs `command` over SSH on the router/OpenWRT box.",
+    "ssh": {
+      "host": "192.168.1.1",
+      "port": 22,
+      "username": "",
+      "password": "",
+      "privateKeyPath": "",
+      "command": "reboot"
+    },
+
+    "_http_comment": "Used when method is 'http'. Some routers (e.g. some ASUS/Ubiquiti/pfSense setups) expose a reboot endpoint.",
+    "http": {
+      "url": "",
+      "method": "POST",
+      "headers": {}
+    }
+  },
+
+  "vpn": {
+    "_comment": "Optional. method: 'none' | 'command'. 'command' runs a local shell command on the agent machine, e.g. a WireGuard up/down script.",
+    "method": "none",
+    "upCommand": "",
+    "downCommand": "",
+    "statusCommand": ""
+  }
+}

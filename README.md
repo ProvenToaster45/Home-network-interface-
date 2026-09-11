@@ -1,30 +1,91 @@
-# HomeControl
+# HomeControl agent
 
-iPhone Home Network Control Panel — installable as a PWA.
+This is the piece that actually touches your network — the PWA on Railway is
+just a browser tab, and a browser tab can't scan your LAN, send Wake-on-LAN
+packets, or reboot your router. This agent runs on something always-on in
+your house (Raspberry Pi, old laptop, NAS, mini PC) and does that work; the
+app talks to it over the network.
 
-## What's in this build
-- Apple meta tags (`apple-mobile-web-app-capable`, status bar style, apple-touch-icon) so "Add to Home Screen" launches full-screen, no Safari chrome.
-- Real app icons (192/512/1024 + 180x180 apple-touch-icon) in `icons/`.
-- `manifest.webmanifest` filled in with icons, scope, and start_url.
-- Safe-area CSS padding so content clears the iPhone notch/Dynamic Island and home indicator.
-- Service worker (`sw.js`) bumped to `v2` with cache versioning so updates actually roll out to installed devices.
+## 1. Install
 
-## Important: this must be served over HTTPS (or localhost), not opened as a file
-iOS Safari will not install a service worker or offer a proper "Add to Home Screen" PWA experience from a `file://` URL. You need to host these 6 files (`index.html`, `style.css`, `app.js`, `manifest.webmanifest`, `sw.js`, `icons/`) somewhere reachable from your iPhone. Easiest free options:
+Needs Node.js 18+ on the machine that will run it (a Pi is fine).
 
-- **GitHub Pages** — push this folder to a repo, enable Pages, done.
-- **Netlify / Vercel / Cloudflare Pages** — drag-and-drop deploy, free tier, gives you an HTTPS URL instantly.
-- **Run it on your own network** — e.g. `python3 -m http.server 8080` on a machine on your LAN, then visit `http://<that-machine's-LAN-IP>:8080` from your iPhone (works without HTTPS since it's plain HTTP on your local network, but the service worker/install prompt is more reliable with real HTTPS).
+```
+git clone <wherever you put this> homecontrol-agent
+cd homecontrol-agent
+npm install
+cp config.example.json config.json
+```
 
-## Installing on iPhone
-1. Open the hosted URL in **Safari** (must be Safari, not Chrome, for the install option to appear).
-2. Tap the **Share** icon → **Add to Home Screen**.
-3. Launch it from the home screen — it opens full-screen like a native app.
+Edit `config.json`:
+- Set `apiKey` to a long random string (e.g. run `openssl rand -hex 32`). This is the password the app sends on every request — without it, anyone who finds your agent's address could scan your network or reboot your router.
+- Set `gateway.ip` to your router's LAN IP (usually `192.168.1.1` or `192.168.0.1`).
+- Leave `router.method` as `"none"` for now unless you already know how your router accepts remote reboot commands (see "Router reboot" below).
 
-## The one real limitation
-A web app (even installed as a PWA) runs in a sandboxed browser context — it cannot reach into your router just because it's on the same Wi-Fi. Every "control" in this UI (reboot, Wi-Fi toggle, device management) is currently a placeholder toast. To make any of it real you need one of:
+Run it:
+```
+npm start
+```
+You should see `HomeControl agent listening on http://0.0.0.0:5100`.
 
-- Your router's **existing web API** (many consumer routers, e.g. some ASUS/Ubiquiti/pfSense models, expose one) — `app.js` would call that directly from the phone if it's reachable and CORS-friendly.
-- A small **local agent/server** you run on your network (e.g. a Raspberry Pi or always-on machine) that the app talks to over HTTP, which in turn does the actual router/SSH/SNMP calls.
+To keep it running after reboots/disconnects, use a process manager, e.g.:
+```
+npm install -g pm2
+pm2 start server.js --name homecontrol-agent
+pm2 save
+pm2 startup   # follow the printed instructions to enable on boot
+```
 
-For media playback: only connect sources you own or are licensed to distribute.
+## 2. Make it reachable by the app — the part that actually matters
+
+The web app is served over **HTTPS** (Railway). If you just point it at
+`http://<pi-ip>:5100`, Safari will silently block the requests — a page
+loaded over HTTPS is not allowed to fetch plain HTTP ("mixed content"). You
+need the agent reachable over HTTPS with a trusted certificate.
+
+**Recommended: Tailscale Serve** — private, stable, real certificate, works
+away from home too, and only your own devices can reach it.
+
+1. Install Tailscale on the agent machine and sign in: https://tailscale.com/download
+2. Install the Tailscale app on your iPhone and sign in with the same account.
+3. On the agent machine, run:
+   ```
+   sudo tailscale serve https / http://localhost:5100
+   ```
+4. Tailscale prints an HTTPS address like `https://your-pi-name.your-tailnet.ts.net`. That's your **Agent URL** — enter it in the HomeControl app's Settings page, along with the `apiKey` from `config.json`.
+
+Because this only works while your iPhone is signed into the same Tailscale account, it's the safest option — nothing is exposed to the open internet.
+
+*Alternative:* a Cloudflare Tunnel (`cloudflared tunnel --url http://localhost:5100`) also gives you an HTTPS URL, but the default quick tunnels are public (anyone with the link can hit your agent) and the address changes every restart — only use this if you understand that tradeoff, and rely on the `apiKey` check to keep it locked down.
+
+## 3. Router reboot (optional, needs your specific hardware)
+
+There's no universal "reboot" command across router brands, so this ships
+disabled (`router.method: "none"`) and the app will show "not configured"
+if you tap Reboot. To wire it up:
+
+- **If your router runs OpenWRT / has SSH access**: set `router.method` to
+  `"ssh"` and fill in `router.ssh` (host, username, password or key path).
+  The default command is just `reboot`.
+- **If your router has an HTTP API** (some ASUS/Ubiquiti/pfSense setups
+  expose one): set `router.method` to `"http"` and fill in the endpoint.
+- Otherwise, most consumer routers only support reboot from their own
+  app/web UI — the HomeControl button can't replace that, and I won't
+  fabricate a command that might not exist.
+
+## 4. VPN toggle (optional)
+
+Same idea: `vpn.method: "command"` runs whatever shell command you give it
+(e.g. a WireGuard `wg-quick up/down wg0` script) on the agent machine.
+Leave it as `"none"` if you don't have a scriptable VPN setup.
+
+## What this agent does NOT do
+
+- It doesn't control Wi-Fi radios/SSIDs/passwords — that's router-specific
+  firmware territory with no common API. Reboot is the one lever most
+  routers give you.
+- The device scan reads the OS's ARP cache, not an active network sweep —
+  it'll show devices that have talked on the LAN recently, not necessarily
+  every device that's technically connected.
+- The speed test is a single-connection download sample, not a lab-grade
+  measurement.
