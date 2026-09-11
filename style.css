@@ -31,3 +31,29 @@ input{width:100%;background:var(--card);border:1px solid var(--line);color:var(-
 .movie-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.poster{aspect-ratio:2/3;border-radius:16px;background:linear-gradient(145deg,#2b2d35,#111318);display:flex;align-items:end;padding:10px;overflow:hidden;position:relative}.poster b{font-size:14px;text-shadow:0 2px 10px #000}.poster span{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.55);padding:4px 7px;border-radius:10px;font-size:10px}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(14px);display:none;align-items:flex-end;z-index:15}.modal.open{display:flex}.sheet{width:100%;max-width:700px;margin:auto;background:#17191e;border:1px solid var(--line);border-radius:28px 28px 0 0;padding:22px;max-height:88vh;overflow:auto}
 @media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}.movie-grid{grid-template-columns:repeat(6,1fr)}.hero{grid-column:span 2}.sheet{border-radius:28px;margin-bottom:20px}.app{padding-top:30px}}
+
+/* ===== v2 additions: multi-view app, agent status, lists, loading states ===== */
+.view{animation:fadein .22s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.navbtn{flex:1;background:transparent;color:var(--muted);padding:9px 4px;border-radius:16px;font-size:12px}
+.navbtn.active{background:rgba(255,255,255,.08);color:var(--text)}
+.agentpill{padding:3px 9px;border-radius:999px;font-size:11px;font-weight:600;background:rgba(255,255,255,.06)}
+.agentpill.ok{color:var(--green)}
+.agentpill.bad{color:var(--red)}
+.agentpill.checking{color:var(--muted)}
+.actionCard{text-align:left;transition:transform .12s ease}
+.actionCard:active{transform:scale(.97)}
+.device-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.device-row:last-child{border:0}
+.device-row .dot{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 12px rgba(48,209,88,.55);flex-shrink:0}
+.device-row .dot.off{background:#555;box-shadow:none}
+.device-row .meta{flex:1;min-width:0}
+.device-row .meta .name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.device-row .meta .ip{font-size:12px;color:var(--muted)}
+.empty{padding:26px 4px;text-align:center;color:var(--muted);font-size:14px}
+.spinner{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.25);border-top-color:var(--text);display:inline-block;animation:spin .7s linear infinite;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.skel{background:linear-gradient(90deg,var(--card2) 25%,rgba(255,255,255,.08) 37%,var(--card2) 63%);background-size:400% 100%;animation:shimmer 1.4s ease infinite;border-radius:10px;height:14px}
+@keyframes shimmer{0%{background-position:100% 0}100%{background-position:0 0}}
+button:disabled{opacity:.5;pointer-events:none}
+.wake-item{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card2);border-radius:14px;padding:10px 12px}
